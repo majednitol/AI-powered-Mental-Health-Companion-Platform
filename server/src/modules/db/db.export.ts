@@ -1,10 +1,13 @@
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import ws from 'ws';
 import { drizzle } from 'drizzle-orm/neon-serverless';
-import * as schema from '../shared/schema';
+import * as schema from '../../modules/shared/schema';
+
 neonConfig.webSocketConstructor = ws as any;
+
 if (!process.env.DATABASE_URL) {
-    throw new Error('DATABASE_URL must be set');
+  throw new Error('DATABASE_URL must be set');
 }
+
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 export const db = drizzle({ client: pool, schema: schema as any });

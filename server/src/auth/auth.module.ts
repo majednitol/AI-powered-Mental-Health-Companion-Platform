@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AuthGuard } from './auth.guard';
-import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { AuthResolver } from './auth.graphql.resolver';
+
 @Module({
-    controllers: [AuthController],
-    providers: [AuthGuard,AuthService],
-    exports: [AuthGuard],
+  providers: [AuthGuard, AuthService, AuthResolver],
+  exports: [AuthGuard, AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

@@ -5,7 +5,6 @@ import { storage, DatabaseStorage, IStorage } from './storage.impl';
 export class StorageService implements IStorage {
   private readonly db: DatabaseStorage = storage;
 
-
   getUser(id: string) {
     return this.db.getUser(id);
   }

@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { JournalController } from './journal.controller';
+import { JournalResolver } from './journal.resolver';
 import { StorageModule } from '../storage/storage.module';
 import { AuthModule } from '../../auth/auth.module';
+
 @Module({
-    imports: [StorageModule, AuthModule],
-    controllers: [JournalController],
+  imports: [StorageModule, AuthModule],
+  providers: [JournalResolver],
 })
-export class JournalModule { }
+export class JournalModule {}
