@@ -1,0 +1,95 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AiInsights {
+  insights: [String!]!
+  recommendations: [String!]!
+  patterns: [String!]!
+}
+
+type MoodEntry {
+  id: ID!
+  userId: String!
+  moodScale: Int!
+  emotions: [String!]
+  notes: String
+  date: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type UserObject {
+  id: ID!
+  email: String!
+  firstName: String
+  lastName: String
+  profileImageUrl: String
+}
+
+type Journal {
+  id: ID!
+  title: String!
+  content: String!
+  tags: [String!]
+  moodRating: Int
+  isPrivate: Boolean
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+type ChatMessage {
+  id: ID!
+  userId: String!
+  message: String!
+  response: String
+  isFromUser: Boolean!
+  createdAt: DateTime!
+}
+
+type AnalyticsStats {
+  currentStreak: Int!
+  weeklyAverage: Float!
+  monthlyAverage: Float!
+  totalJournalEntries: Int!
+  totalMoodEntries: Int!
+  weeklyJournalEntries: Int!
+}
+
+type Query {
+  aiInsights: AiInsights!
+  me: UserObject
+  moodEntries(limit: Int): [MoodEntry!]!
+  todaysMoodEntry: MoodEntry
+  journals(limit: Int): [Journal!]!
+  journal(id: String!): Journal
+  chatMessages(limit: Int): [ChatMessage!]!
+  analyticsInsights: AiInsights!
+  analyticsStats: AnalyticsStats!
+}
+
+type Mutation {
+  chatResponse(message: String!): String!
+  createMoodEntry(data: CreateMoodInput!): MoodEntry!
+  createJournal(data: CreateJournalInput!): Journal!
+  sendMessage(message: String!): ChatMessage!
+}
+
+input CreateMoodInput {
+  moodScale: Int!
+  emotions: [String!]
+  notes: String
+  date: String
+}
+
+input CreateJournalInput {
+  title: String!
+  content: String!
+  tags: [String!]
+  moodRating: Int
+}

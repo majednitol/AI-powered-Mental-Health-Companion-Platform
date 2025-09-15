@@ -19,7 +19,17 @@ export class MoodResolver {
       userId,
       date: data.date ? new Date(data.date) : new Date(),
     };
-    return storage.createMoodEntry(moodData as any);
+
+    const entry = await storage.createMoodEntry(moodData as any);
+
+    // Explicitly add updatedAt
+    return {
+      ...entry,
+      emotions: entry.emotions ?? undefined,
+      notes: entry.notes ?? undefined,
+      createdAt: entry.createdAt ?? new Date(),
+      updatedAt: new Date(), // explicitly add it
+    };
   }
 
   @UseGuards(AuthGuard)
@@ -29,13 +39,31 @@ export class MoodResolver {
     @Args('limit', { type: () => Int, nullable: true }) limit?: number,
   ): Promise<MoodEntry[]> {
     const userId = ctx.req.user.claims.sub;
-    return storage.getMoodEntries(userId, limit);
+    const entries = await storage.getMoodEntries(userId, limit);
+
+    return entries.map(entry => ({
+      ...entry,
+      emotions: entry.emotions ?? undefined,
+      notes: entry.notes ?? undefined,
+      createdAt: entry.createdAt ?? new Date(),
+      updatedAt: new Date(), // explicitly add it
+    }));
   }
 
   @UseGuards(AuthGuard)
   @Query(() => MoodEntry, { nullable: true })
   async todaysMoodEntry(@Context() ctx: any): Promise<MoodEntry | undefined> {
     const userId = ctx.req.user.claims.sub;
-    return storage.getTodaysMoodEntry(userId);
+    const entry = await storage.getTodaysMoodEntry(userId);
+
+    if (!entry) return undefined;
+
+    return {
+      ...entry,
+      emotions: entry.emotions ?? undefined,
+      notes: entry.notes ?? undefined,
+      createdAt: entry.createdAt ?? new Date(),
+      updatedAt: new Date(), // explicitly add it
+    };
   }
 }

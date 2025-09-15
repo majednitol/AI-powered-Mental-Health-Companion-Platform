@@ -5,18 +5,18 @@ export class ChatMessage {
   @Field(() => ID)
   id: string;
 
-  @Field()
+  @Field(() => String)
   userId: string;
 
-  @Field()
+  @Field(() => String)
   message: string;
 
-  @Field({ nullable: true })
-  response?: string;
+  @Field(() => String, { nullable: true }) // explicitly declare type
+  response?: string; // use optional instead of string | null
 
-  @Field()
+  @Field(() => Boolean)
   isFromUser: boolean;
 
-  @Field()
+  @Field(() => Date) // if nullable, use { nullable: true }
   createdAt: Date;
 }

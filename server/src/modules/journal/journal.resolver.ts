@@ -14,7 +14,17 @@ export class JournalResolver {
     @Args('data') data: CreateJournalInput,
   ): Promise<Journal> {
     const userId = ctx.req.user.claims.sub;
-    return storage.createJournalEntry({ ...data, userId } as any);
+    const entry = await storage.createJournalEntry({ ...data, userId } as any);
+
+    // Map null -> undefined or default values
+    return {
+      ...entry,
+      tags: entry.tags ?? undefined,
+      moodRating: entry.moodRating ?? undefined,
+      isPrivate: entry.isPrivate ?? undefined,
+      createdAt: entry.createdAt ?? new Date(),
+      updatedAt: entry.updatedAt ?? undefined,
+    };
   }
 
   @UseGuards(AuthGuard)
@@ -24,7 +34,16 @@ export class JournalResolver {
     @Args('limit', { type: () => Int, nullable: true }) limit?: number,
   ): Promise<Journal[]> {
     const userId = ctx.req.user.claims.sub;
-    return storage.getJournalEntries(userId, limit);
+    const entries = await storage.getJournalEntries(userId, limit);
+
+    return entries.map(entry => ({
+      ...entry,
+      tags: entry.tags ?? undefined,
+      moodRating: entry.moodRating ?? undefined,
+      isPrivate: entry.isPrivate ?? undefined,
+      createdAt: entry.createdAt ?? new Date(),
+      updatedAt: entry.updatedAt ?? undefined,
+    }));
   }
 
   @UseGuards(AuthGuard)
@@ -34,6 +53,17 @@ export class JournalResolver {
     @Args('id') id: string,
   ): Promise<Journal | undefined> {
     const userId = ctx.req.user.claims.sub;
-    return storage.getJournalEntry(id, userId);
+    const entry = await storage.getJournalEntry(id, userId);
+
+    if (!entry) return undefined;
+
+    return {
+      ...entry,
+      tags: entry.tags ?? undefined,
+      moodRating: entry.moodRating ?? undefined,
+      isPrivate: entry.isPrivate ?? undefined,
+      createdAt: entry.createdAt ?? new Date(),
+      updatedAt: entry.updatedAt ?? undefined,
+    };
   }
 }

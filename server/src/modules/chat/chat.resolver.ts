@@ -22,12 +22,18 @@ export class ChatResolver {
     }
 
     // Store user message
-    await storage.createChatMessage({
+    const userMessage = await storage.createChatMessage({
       userId,
       message,
       response: null,
       isFromUser: true,
     } as any);
+
+    const mappedUserMessage: ChatMessage = {
+      ...userMessage,
+      response: userMessage.response ?? undefined,
+      createdAt: userMessage.createdAt ?? new Date(),
+    };
 
     // Build AI context
     const recentJournals = await storage.getRecentJournalContext(userId, 3);
@@ -38,12 +44,12 @@ export class ChatResolver {
         title: entry.title,
         content: entry.content,
         moodRating: entry.moodRating,
-        tags: entry.tags,
-        createdAt: entry.createdAt,
+        tags: entry.tags ?? undefined,
+        createdAt: entry.createdAt ?? new Date(),
       })),
       recentMoodData: recentMoods.map(m => ({
         moodScale: m.moodScale,
-        emotions: m.emotions,
+        emotions: m.emotions ?? undefined,
         date: m.date,
       })),
     };
@@ -52,14 +58,20 @@ export class ChatResolver {
     const aiResponse = await this.ai.generateChatResponse(message, context);
 
     // Save AI reply
-    const chatMessage = await storage.createChatMessage({
+    const aiMessage = await storage.createChatMessage({
       userId,
       message: aiResponse,
       response: null,
       isFromUser: false,
     } as any);
 
-    return chatMessage;
+    const mappedAiMessage: ChatMessage = {
+      ...aiMessage,
+      response: aiMessage.response ?? undefined,
+      createdAt: aiMessage.createdAt ?? new Date(),
+    };
+
+    return mappedAiMessage;
   }
 
   @UseGuards(AuthGuard)
@@ -70,6 +82,13 @@ export class ChatResolver {
   ): Promise<ChatMessage[]> {
     const userId = ctx.req.user.claims.sub;
     const messages = await storage.getChatMessages(userId, limit);
-    return messages.reverse();
+
+    return messages
+      .map(msg => ({
+        ...msg,
+        response: msg.response ?? undefined,
+        createdAt: msg.createdAt ?? new Date(),
+      }))
+      .reverse();
   }
 }
