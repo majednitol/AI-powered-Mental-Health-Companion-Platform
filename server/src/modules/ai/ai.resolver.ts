@@ -17,7 +17,6 @@ export class AiResolver {
   ): Promise<string> {
     const userId = ctx.req.user.claims.sub;
 
-    // Fetch recent journals + moods for context
     const recentJournals = await storage.getRecentJournalContext(userId, 3);
     const recentMoods = await storage.getMoodEntries(userId, 7);
 
