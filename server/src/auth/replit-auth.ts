@@ -116,7 +116,7 @@ export async function setupAuth(app: Express) {
         });
     });
 }
-
+// A lightweight function to refresh tokens (used by the guard)
 export async function refreshTokensIfNeeded(user: any) {
     if (!user) return false;
     const now = Math.floor(Date.now() / 1000);
