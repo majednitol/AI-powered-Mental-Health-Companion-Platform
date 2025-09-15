@@ -2,7 +2,7 @@ AI-powered Mental Health Companion Platform
 
 A full-stack platform that helps users track daily moods, journal experiences, and interact with a context-aware AI chatbot. Includes analytics dashboards, personalized insights, and scalable backend services.
 
-> ⚡️ Available in two backend versions: REST API and GraphQL.
+> ⚡️ Available in two backend versions: REST API (main branch) and GraphQL (graphql version branch) .
 
 
 
