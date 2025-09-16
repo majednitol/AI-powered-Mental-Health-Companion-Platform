@@ -1,28 +1,49 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
+import { useRouter } from "next/navigation";
+import React from "react";
 
-async function fetchUser() {
-  const res = await fetch("http://localhost:5001/api/auth/user", { credentials: "include" });
-  if (!res.ok) {
-    if (res.status === 401) return null;
-    throw new Error("Failed to fetch user");
+// GraphQL query
+const ME_QUERY = gql`
+  query Me {
+    me {
+      id
+      firstName
+      lastName
+      email
+    }
   }
-  return res.json();
-}
+`;
 
-export function useAuth() {
-  const { data: user, isLoading, error } = useQuery({
-    queryKey: ["authUser"],
-    queryFn: fetchUser,
-    retry: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+export function useAuth(redirectToLogin: boolean = true) {
+  const router = useRouter();
+
+  // Use Apollo Client's useQuery
+  const { data, loading, error } = useQuery(ME_QUERY, {
+    fetchPolicy: "network-only", // always fetch fresh data
   });
+
+  const user = data?.me || null;
+  const isAuthenticated = !!user;
+
+  // Redirect if not authenticated
+  React.useEffect(() => {
+    if (!loading && redirectToLogin && !isAuthenticated) {
+      router.replace("/"); // redirect to landing
+    }
+  }, [loading, isAuthenticated, redirectToLogin, router]);
+
+  // Optional: log errors
+  React.useEffect(() => {
+    if (error) console.error("GraphQL fetch user error:", error);
+  }, [error]);
 
   return {
     user,
-    isAuthenticated: !!user,
-    isLoading,
+    isAuthenticated,
+    isLoading: loading,
     error,
   };
 }

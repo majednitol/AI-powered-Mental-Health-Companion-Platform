@@ -13,8 +13,11 @@ export class AuthResolver {
   @UseGuards(AuthGuard)
   async me(@Context() ctx: any) {
     const req = ctx.req;
-    const userId = req.user.claims.sub;
+    if (!req.user) return null;
+
+    const userId = req.user.id;
     return this.authService.getUser(userId);
+
   }
 
   // Initiates Google login
@@ -27,7 +30,7 @@ export class AuthResolver {
   // Logs the user out
   @Query(() => String)
   async logout(@Context() ctx: any) {
-    ctx.req.logout();
+    ctx.req.logout(() => {});
     return 'Logged out successfully';
   }
 }

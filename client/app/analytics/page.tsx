@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useAuth } from "../src/hooks/useAuth";
 import { useToast } from "../src/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
-import { isUnauthorizedError } from "../src/lib/authUtils";
+
 import Navigation from "../src/components/navigation";
 import MoodChart from "../src/components/mood-chart";
 import { Card, CardContent, CardHeader, CardTitle } from "../src/components/ui/card";

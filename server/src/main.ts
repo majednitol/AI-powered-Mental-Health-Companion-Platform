@@ -15,7 +15,10 @@ async function bootstrap() {
   app.use(SessionMiddleware);
   app.use(passport.initialize());
   app.use(passport.session());
-
+app.enableCors({
+    origin: ["http://localhost:3000"], // your Next.js frontend
+    credentials: true,                 // allow cookies / session
+  });
   await app.listen(parseInt(process.env.PORT || '5001', 10));
   console.log(`🚀 GraphQL API running at http://localhost:5001/graphql`);
 }
