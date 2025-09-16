@@ -1,10 +1,20 @@
-import { Module } from '@nestjs/common';
+// src/auth/auth.module.ts
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { AuthController } from './auth.controller';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { AuthResolver } from './auth.graphql.resolver';
+import { GoogleStrategy } from './google.strategy';
+import { SessionMiddleware } from './session.middleware';
+import { OidcService } from './oidc.service'; 
 
 @Module({
-  providers: [AuthGuard, AuthService, AuthResolver],
-  exports: [AuthGuard, AuthService],
+  controllers: [AuthController],
+  providers: [AuthGuard, AuthService, AuthResolver, GoogleStrategy, OidcService], 
+  exports: [AuthGuard, AuthService, OidcService], 
 })
-export class AuthModule {}
+export class AuthModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(SessionMiddleware).forRoutes('*'); 
+  }
+}

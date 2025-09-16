@@ -64,6 +64,8 @@ type AnalyticsStats {
 type Query {
   aiInsights: AiInsights!
   me: UserObject
+  login: String!
+  logout: String!
   moodEntries(limit: Int): [MoodEntry!]!
   todaysMoodEntry: MoodEntry
   journals(limit: Int): [Journal!]!
