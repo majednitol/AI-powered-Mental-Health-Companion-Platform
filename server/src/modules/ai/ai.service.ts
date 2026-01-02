@@ -35,7 +35,7 @@ User message: ${userMessage}
 Context: ${JSON.stringify(context).slice(0, 2000)}`;
 
       const model = this.genai.getGenerativeModel({
-        model: 'gemini-1.5-flash',
+        model: 'gemini-2.5-flash',
       });
 
       const response = await model.generateContent({
